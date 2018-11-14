@@ -188,8 +188,7 @@ server <- function(input, output) {
     ag <- input$input_type
     indc <- input$ind
     dt <- dt[Agency %in% ag, ]
-    dt <- dt[ind %in% indc, .(Date = as.Date(as.yearmon(MY)), Agency = Agency, Indicator = ind, Value = val2, 
-                            `Rolling Mean` = rollm, `Flagged Points`= Flag.1)]
+    dt <- dt[ind %in% indc, .(Date = as.Date(as.yearmon(MY)), Agency = Agency, Indicator = ind, Value = val2)]
     datatable(dt, options = list(paging=T))
     })
 
