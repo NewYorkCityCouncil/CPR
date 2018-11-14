@@ -175,7 +175,7 @@ server <- function(input, output) {
       dat <- dt[Agency %in% input$input_type, ][ind %in% input$ind, ]
       p <- ggplot(dat, aes(x = MY, y = val2)) + 
         geom_point() + 
-        geom_smooth(span = .25, se=F) +
+        geom_smooth(span = .50, se=F) +
         theme_bw() + labs(x = "Date", y = "Indicator") + 
         theme(axis.title=element_text(size=14, family = "Arial"))
         ggplotly(p)
@@ -194,8 +194,8 @@ server <- function(input, output) {
     })
 
   output$about <- renderText({
-    paste0("This plot shows how the", input$ind, "changes over time. The blue line is a loess curve, 
-           which fits a localized polynomial regression to the data. This gives us a sense of the overall trend that is robust to seasonality.",
+    paste0("This plot shows how the indicator", input$ind, "changes over time. The blue line is a loess curve, 
+           which fits a localized polynomial regression to the data. This gives us a sense of the overall trend while staying robust to seasonality.",
            collapse = " ")
   })
   
