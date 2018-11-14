@@ -71,4 +71,4 @@ tempdt[, N := .N, by = c("ind", "Agency")]
 hist(tempdt$N) # reasonable
 
 # work with this 
-write.csv(tempdt, "cpr_clean.csv")
+# write.csv(tempdt, "cpr_clean.csv")

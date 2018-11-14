@@ -12,13 +12,13 @@ library(zoo)
 library(plotly)
 library(DT)
 library(extrafont)
-# loadfonts(device = "win")
+loadfonts(device = "win")
 library(readr)
 library(cowplot)
 library(gridExtra)
 library(shiny)
 
-# source("CPR_Explore_TS.R")
+
 dt <- fread("shiny_cpr.csv")[, -1]
 # datsub <- read_csv("shiny_cpr.csv", col_types = cols(remainder = col_double()))[, -1]
 # setDT(datsub)
@@ -194,7 +194,7 @@ server <- function(input, output) {
     })
 
   output$about <- renderText({
-    paste0("This plot shows how the indicator ", input$ind, " changes over time. The blue line is a loess curve, 
+    paste("This plot shows how the indicator -", input$ind, "-changes over time. The blue line is a loess curve, 
            which fits a localized polynomial regression to the data. This gives us a sense of the overall trend while staying robust to seasonality.",
            sep = " ")
   })
