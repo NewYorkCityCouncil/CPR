@@ -196,7 +196,7 @@ server <- function(input, output) {
   output$about <- renderText({
     paste0("This plot shows how the indicator", input$ind, "changes over time. The blue line is a loess curve, 
            which fits a localized polynomial regression to the data. This gives us a sense of the overall trend while staying robust to seasonality.",
-           collapse = " ")
+           sep = " ")
   })
   
 output$direction <- renderText({ 
