@@ -17,13 +17,14 @@ library(readr)
 library(cowplot)
 library(gridExtra)
 library(shiny)
+library(data.table)
 
 
-dt <- fread("shiny_cpr.csv")[, -1]
+#dt <- fread("shiny_cpr.csv")[, -1]
+dt <- fread("cpr_w_anomolies.csv")[, -1]
 # datsub <- read_csv("shiny_cpr.csv", col_types = cols(remainder = col_double()))[, -1]
 # setDT(datsub)
 dt[, MY := as.yearmon(MY)]
-dt[type %in% "ts", remainder := round(as.numeric(remainder))]
 dt <- dt[N>=10, ] # subset down to indicators that have more than 10 data points 
 
 # test app 
@@ -173,12 +174,23 @@ server <- function(input, output) {
 
     output$plot <- renderPlotly({
       dat <- dt[Agency %in% input$input_type, ][ind %in% input$ind, ]
-      p <- ggplot(dat, aes(x = MY, y = val2)) + 
+      if(length(unique(dat$anomaly))>1) {
+      p <- ggplot(dat, aes(x = MY, y = val2, colour = anomaly)) + 
         geom_point() + 
-        geom_smooth(span = .50, se=F) +
+       # geom_smooth(span = .25, se=F) +
         theme_bw() + labs(x = "Date", y = "Indicator") + 
         theme(axis.title=element_text(size=14, family = "Arial"))
-        ggplotly(p)
+      }
+      
+      else{
+        p <- ggplot(dat, aes(x = MY, y = val2)) + 
+          geom_point() + 
+          geom_smooth(span = .25, se=F) +
+          theme_bw() + labs(x = "Date", y = "Indicator") + 
+          theme(axis.title=element_text(size=14, family = "Arial"))
+  
+      }
+      ggplotly(p)
   })
   
  
@@ -193,8 +205,9 @@ server <- function(input, output) {
     })
 
   output$about <- renderText({
-    paste("This plot shows how the indicator -", input$ind, "changes over time. The blue line is a loess curve, 
-           which fits a localized polynomial regression to the data. This gives us a sense of the overall trend while staying robust to seasonality.",
+    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. Where there is a blue (loess) curve, there is either too little data to do anamoly detection or we did not find any anamolies. 
+           In these plots, we are showing how the data are changing over time, using a loess curve (localized, polynomial regression).
+           In plots that have flagged anomalies, to determine the anomalies, we used a time series decomposion and flagged any points that, after subtracting the time and overall trends, were larger or smaller than 3 times the IQR.",
            sep = " ")
   })
   
