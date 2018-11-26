@@ -30,8 +30,7 @@ dt <- dt[N>=10, ] # subset down to indicators that have more than 10 data points
 # test app 
 ui <- fluidPage(
   
-  titlePanel("CPR Data"),
-  
+  titlePanel("CPR Data"), 
   sidebarLayout(    
   sidebarPanel(
     selectInput("input_type", "Agency", choices = sort(unique(dt$Agency))), 
@@ -161,16 +160,6 @@ server <- function(input, output) {
   })
   
   
-# dt <- reactive({
-# 
-#   
-#      if(dat$N < 10){
-#        validate(
-#          need(dt$N < 10, "There are less than 10 data points for this indicator")
-#        )}
-# 
-#        dat
-# })
 
     output$plot <- renderPlotly({
       dat <- dt[Agency %in% input$input_type, ][ind %in% input$ind, ]
@@ -194,7 +183,6 @@ server <- function(input, output) {
   })
   
  
-  
   output$table <- renderDataTable({
     req(input$input_type)
     ag <- input$input_type
@@ -205,10 +193,15 @@ server <- function(input, output) {
     })
 
   output$about <- renderText({
-    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. Where there is a blue (loess) curve, there is either too little data to do anamoly detection or we did not find any anamolies. 
-           In these plots, we are showing how the data are changing over time, using a loess curve (localized, polynomial regression).
-           In plots that have flagged anomalies, to determine the anomalies, we used a time series decomposion and flagged any points that, after subtracting the time and overall trends, were larger or smaller than 3 times the IQR.",
+    dat <- dt[Agency %in% input$input_type, ][ind %in% input$ind, ]
+    if(length(unique(dat$anomaly))>1)
+    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. To determine anomalies, we used a time series decomposion and flagged 
+          any points that, after subtracting the time and overall trends, were larger or smaller than 3 times the IQR.",
            sep = " ")
+    else{
+    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. The blue (loess) curve, there is either too little data to do anamoly detection or we did not find any anamolies. 
+               In these plots, we are showing how the data are changing over time, using a loess curve (localized, polynomial regression).",
+               sep = " ")}
   })
   
 output$direction <- renderText({ 
