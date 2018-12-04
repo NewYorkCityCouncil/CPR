@@ -25,7 +25,7 @@ dt <- fread("cpr_w_anomolies.csv")[, -1]
 # datsub <- read_csv("shiny_cpr.csv", col_types = cols(remainder = col_double()))[, -1]
 # setDT(datsub)
 dt[, MY := as.yearmon(MY)]
-dt <- dt[N>=10, ] # subset down to indicators that have more than 10 data points 
+dt <- dt[N >= 10, ] # subset down to indicators that have more than 10 data points 
 
 # test app 
 ui <- fluidPage(
@@ -159,7 +159,6 @@ server <- function(input, output) {
            
   })
   
-  
 
     output$plot <- renderPlotly({
       dat <- dt[Agency %in% input$input_type, ][ind %in% input$ind, ]
@@ -199,8 +198,8 @@ server <- function(input, output) {
           any points that, after subtracting the time and overall trends, were larger or smaller than 3 times the IQR.",
            sep = " ")
     else{
-    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. The blue (loess) curve, there is either too little data to do anamoly detection or we did not find any anamolies. 
-               In these plots, we are showing how the data are changing over time, using a loess curve (localized, polynomial regression).",
+    paste("This plot shows how the indicator --", input$ind,  "-- changes over time. For this plot, there is either too little data to do anamoly detection or we did not find any anamolies. 
+               The loess curve shows how the data are changing over time.",
                sep = " ")}
   })
   
